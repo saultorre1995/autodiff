@@ -547,7 +547,11 @@ class Power(Operator):
         return self.owner.set_ope(Power,a,b);
 
     def backward(self,a,b,dout):
-        return dout*b*np.power(a,b-1.0),dout*np.log(a)*np.power(a,b)
+        #if a<=0:
+        #    loga = np.log(1e-8)
+        #else:
+        loga = np.log(a)
+        return dout*b*np.power(a,b-1.0),dout*loga*np.power(a,b)
 
     def backward_obj(self,a,b,dout):
         return dout*b*self.owner.set_ope(a,b-1.0),dout*self.owner.set_ope();
