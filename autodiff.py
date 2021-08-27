@@ -635,34 +635,3 @@ class Tangent(Operator):
 
 
 
-
-if __name__=='__main__':
-    import sys,os;
-    '''
-    Just make the autodifferentiation
-    with the header that you are looking.
-    '''
-    #myform = DTrack();
-    #x  = myform.set_var(value=5.0,name="x");
-    #y  = myform.set_var(value=3.0,name="y") 
-    #c1 = myform.set_cte(value=2.0);
-    #c2 = myform.set_cte(value=3.0);
-    #header = (x**c1+c2*x+c1*(x+c2))/x
-    #header = x**2+y**2+(x * y);
-    # Maybe the order should be an internal variable
-    #myform.set_header(header);
-    #order = myform.Topsort();
-    #myform.Forward()
-    #myform.Backward()
-    #myform.PlotGraph();
-    # Now get the minimization
-    #myform.GetGradObj();
-    #print(myform.var["x"].gradient_obj)
-    #myform.set_header(myform.var["x"].gradient_obj)
-    #myform.Topsort();
-    #myform.Forward();
-
-    #grads=myform.Backward(order);
-    #print(x.gradient)
-    #myform.reset()
-    #figure=myform.PlotGraph();

@@ -16,6 +16,6 @@ descent=Gradescent(obj);
 # alpha = learning rate
 descent.run(steps=10000,alpha=0.01);
 # Get a dictionary with the outputs of the minimization
-print(descent.output)
+print("Gradient Descent Output",descent.output)
 
 
