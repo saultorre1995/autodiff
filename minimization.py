@@ -3,6 +3,7 @@
 # Bibliography : Algorithms for Optimization Mykel J. Kochenderfer Tim A. Wheeler
 import autodiff as au
 import numpy as np
+import sys
 import tracemalloc
 # Track memory
 
@@ -61,7 +62,7 @@ class Adagrad(Minimization):
     def run(self,steps,alpha=0.01):
         # eps avoid the multiplication by zero
         # alpha is the learning rate, normally 0.01
-        eps = 10e-8;
+        eps = 10e-10;
         varnames = self.dtrack.var.keys();
         order = self.dtrack.Topsort();
         # Accumulative vector
@@ -95,23 +96,45 @@ class Nesterov(Minimization):
             # Calculate momentum
             mom = beta * mom - alpha * gradients
             for c,varname in enumerate(varnames):
-                self.dtrack.var[varname].value=self.dtrack.var[varname].value + mom
+                self.dtrack.var[varname].value=self.dtrack.var[varname].value + mom[c]
         # get the output
         self.output = {variable.name:variable.value  for variable in self.dtrack.var.values()}
 
 
 
-class RMSprop(Minimization):
+class Adadelta(Minimization):
     '''
-    RMSprop Unconstrained Minimization
+    Adadelta Unconstrained Minimization
     '''
-    pass
+    def run(self,steps,beta_grad=0.9,beta_diff=0.9,eps=10e-8):
+        varnames = self.dtrack.var.keys();
+        order = self.dtrack.Topsort();
+        # Initialize the gradient squared sum and the difference squared sums
+        grad_sq_sum  = np.zeros(len(varnames));
+        diff_sq_sum = np.zeros(len(varnames));
+        for i in  range(steps):
+            self.dtrack.Forward(order);
+            self.dtrack.Backward(order);
+            gradients = np.array([self.dtrack.var[varname].gradient for varname in varnames])
+            # update grad_sq_sum
+            grad_sq_sum = beta_grad*grad_sq_sum + (1.0-beta_grad)*gradients*gradients;
+            # calculate delta_x that start in 0.0
+            delta_x = - ((np.sqrt(diff_sq_sum) + eps)/(eps+np.sqrt(grad_sq_sum)))*gradients
+            #print(delta_x)
+            diff_sq_sum = beta_diff*diff_sq_sum + (1.0 - beta_diff) * delta_x * delta_x
+            for c,varname in enumerate(varnames):
+                self.dtrack.var[varname].value=self.dtrack.var[varname].value + delta_x[c]
+        # get the output
+        self.output = {variable.name:variable.value  for variable in self.dtrack.var.values()}
+
 
 class Adam(Minimization):
     '''
     Adam Unconstrained Minimization
     '''
-    pass
+    def run(self):
+        
+        pass
  
 
 

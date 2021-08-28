@@ -187,6 +187,7 @@ class DTrack:
         # Set the function or header
         self.head_node=head;
 
+
     def get_var(self,var):
         if isinstance(Variable):
             return self.var[var.name]
@@ -547,8 +548,10 @@ class Power(Operator):
         return self.owner.set_ope(Power,a,b);
 
     def backward(self,a,b,dout):
+        # mask the values of the logarithm in order to avoid log(0)
+        #print(a)
         #if a<=0:
-        #    loga = np.log(1e-8)
+        #    loga= -1e20
         #else:
         loga = np.log(a)
         return dout*b*np.power(a,b-1.0),dout*loga*np.power(a,b)
